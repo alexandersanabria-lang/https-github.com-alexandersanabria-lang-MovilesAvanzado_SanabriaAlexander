@@ -145,3 +145,62 @@ switch letra {
 case "a", "e", "i", "o", "u": print("Vocal")
 default: print("Consonante")
 } // PREDICT 5: "Vocal"
+
+
+
+// ===== EJERCICIO 3: FOR-IN =====
+
+for i in 1...5 {
+    print("Número: \(i)")
+}
+
+// --- TODO 7: Tabla del 7 ---
+for i in 1...12 {
+    print("7 x \(i) = \(7 * i)")
+}
+
+// --- TODO 8: Sumatoria del 1 al 100 ---
+var suma = 0
+for i in 1...100 {
+    suma = suma + i
+}
+print("La suma del 1 al 100 es: \(suma)") // 5050
+
+// --- TODO 9: Factorial de 8 ---
+var factorial = 1
+for i in 1...8 {
+    factorial = factorial * i
+}
+print("8! = \(factorial)") // 40320
+
+// --- TODO 10: Patrón de asteriscos ---
+for i in 1...5 {
+    print(String(repeating: "*", count: i))
+}
+
+// FIX 4: pares del 2 al 20
+for i in 1...20 {
+    if i % 2 == 0 {
+        print(i)
+    }
+}
+
+// FIX 5: cuenta regresiva del 10 al 1
+for i in stride(from: 10, through: 1, by: -1) {
+    print(i)
+}
+
+// PREDICT 6
+var total = 0
+for i in 1...5 {
+    total += i
+}
+print(total) // Valor: 15, Iteraciones: 5
+
+// PREDICT 7
+var texto = ""
+for _ in 1...3 {
+    texto += "Hola "
+}
+print(texto) // "Hola Hola Hola "
+// El "_" se usa cuando no necesitas el valor del índice, solo repetir la acción ç
