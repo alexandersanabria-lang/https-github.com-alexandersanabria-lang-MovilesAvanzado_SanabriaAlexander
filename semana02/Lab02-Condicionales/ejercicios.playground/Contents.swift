@@ -203,4 +203,70 @@ for _ in 1...3 {
     texto += "Hola "
 }
 print(texto) // "Hola Hola Hola "
-// El "_" se usa cuando no necesitas el valor del índice, solo repetir la acción ç
+// El "_" se usa cuando no necesitas el valor del índice, solo repetir la acción
+
+// ===== EJERCICIO 4: WHILE =====
+
+var contador = 5
+while contador > 0 {
+    print("Cuenta regresiva: \(contador)")
+    contador -= 1
+}
+print("¡Despegue!")
+
+// --- TODO 11: Ahorro mensual ---
+var ahorro = 0.0
+var meses = 0
+let meta = 2000.0
+let ahorroMensual = 150.0
+while ahorro < meta {
+    ahorro += ahorroMensual
+    meses += 1
+}
+print("Necesita \(meses) meses para juntar S/. \(meta)")
+
+// --- TODO 12: División sucesiva ---
+var numero2 = 1000.0
+var divisiones = 0
+while numero2 >= 1 {
+    numero2 = numero2 / 2
+    divisiones += 1
+    print("División \(divisiones): \(numero2)")
+}
+print("Se dividió \(divisiones) veces")
+
+// --- TODO 13: repeat-while ---
+let intento1 = 25
+let intento2 = -3
+let intento3 = 15
+
+var intentoActual = intento1
+var esValido = false
+var numIntento = 1
+
+repeat {
+    if intentoActual >= 0 && intentoActual <= 20 {
+        esValido = true
+        print("Nota \(intentoActual) válida en intento \(numIntento)")
+    } else {
+        print("Nota \(intentoActual) inválida, intento \(numIntento)")
+        if numIntento == 1 { intentoActual = intento2 }
+        if numIntento == 2 { intentoActual = intento3 }
+        numIntento += 1
+    }
+} while !esValido
+
+// PREDICT 8
+var a = 100
+while a > 1 {
+    a = a / 3
+}
+print(a) // Valor final: 1, Vueltas: 4 (100→33→11→3→1)
+
+// PREDICT 9
+var b = 0
+repeat {
+    b += 1
+} while b < 0
+print(b) // Valor: 1
+// repeat-while ejecuta al menos una vez porque revisa la condición AL FINAL, no al inicio
