@@ -63,3 +63,29 @@ if hora >= 0 && hora < 12 {
 } else {
     print("Hora inválida")
 }
+// PREDICT: ¿Qué imprime cada bloque?
+let x = 10
+if x > 5 && x < 20 {
+    print("Dentro del rango")
+} else {
+    print("Fuera del rango")
+} // PREDICT 1: ___
+
+let y = 15
+if y > 20 {
+    print("Mayor que 20")
+} else if y > 10 {
+    print("Mayor que 10")
+} else if y > 5 {
+    print("Mayor que 5")
+} // PREDICT 2: ___
+
+let esLunes = true
+let llueve = false
+if esLunes && llueve {
+    print("Lunes lluvioso")
+} else if esLunes || llueve {
+    print("Es lunes O llueve")
+} else {
+    print("Ni lunes ni llueve")
+} // PREDICT 3: ___
