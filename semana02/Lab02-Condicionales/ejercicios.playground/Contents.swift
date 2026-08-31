@@ -270,3 +270,70 @@ repeat {
 } while b < 0
 print(b) // Valor: 1
 // repeat-while ejecuta al menos una vez porque revisa la condición AL FINAL, no al inicio
+
+
+// ===== EJERCICIO 5: CARRITO DE COMPRAS =====
+
+let prod1 = "Laptop"; let precio1 = 3500.0; let cant1 = 1
+let prod2 = "Mouse"; let precio2 = 45.50; let cant2 = 2
+let prod3 = "Teclado"; let precio3 = 120.00; let cant3 = 1
+let prod4 = "Monitor"; let precio4 = 890.00; let cant4 = 1
+let prod5 = "USB Cable"; let precio5 = 15.00; let cant5 = 3
+
+// TODO 14 y 15
+let sub1 = precio1 * Double(cant1)
+let sub2 = precio2 * Double(cant2)
+let sub3 = precio3 * Double(cant3)
+let sub4 = precio4 * Double(cant4)
+let sub5 = precio5 * Double(cant5)
+let subtotalGeneral = sub1 + sub2 + sub3 + sub4 + sub5
+
+// TODO 16
+var porcentajeDescuento = 0.0
+if subtotalGeneral >= 5000 {
+    porcentajeDescuento = 0.15
+} else if subtotalGeneral >= 2000 {
+    porcentajeDescuento = 0.10
+} else if subtotalGeneral >= 500 {
+    porcentajeDescuento = 0.05
+}
+let descuento = subtotalGeneral * porcentajeDescuento
+let subtotalConDescuento = subtotalGeneral - descuento
+
+// TODO 17
+let montoParaCategoria = Int(subtotalGeneral)
+var categoriaCliente = ""
+switch montoParaCategoria {
+case 0..<500: categoriaCliente = "Regular"
+case 500..<2000: categoriaCliente = "Frecuente"
+case 2000..<5000: categoriaCliente = "VIP"
+default: categoriaCliente = "Premium"
+}
+
+// TODO 18
+let igv = subtotalConDescuento * 0.18
+let totalFinal = subtotalConDescuento + igv
+
+// TODO 19
+var separador = ""
+for _ in 1...40 {
+    separador += "="
+}
+print(separador)
+print("        TICKET DE COMPRA")
+print("Cliente: \(categoriaCliente)")
+print(separador)
+print("\(prod1) x\(cant1)  S/. \(sub1)")
+print("\(prod2) x\(cant2)  S/. \(sub2)")
+print("\(prod3) x\(cant3)  S/. \(sub3)")
+print("\(prod4) x\(cant4)  S/. \(sub4)")
+print("\(prod5) x\(cant5)  S/. \(sub5)")
+print(separador)
+print("Subtotal: S/. \(subtotalGeneral)")
+print("Descuento (\(porcentajeDescuento * 100)%): -S/. \(descuento)")
+print("Subtotal c/desc: S/. \(subtotalConDescuento)")
+print("IGV (18%): S/. \(igv)")
+print(separador)
+print("TOTAL: S/. \(totalFinal)")
+print(separador)
+print("¡Gracias por su compra!")
