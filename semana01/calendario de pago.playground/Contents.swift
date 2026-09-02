@@ -110,6 +110,7 @@ print("====== DETALLE DE PAGOS ======")
 print("Mes\tMonto Inicial\tCuota Mensual\tResta por Pago")
 
 var saldoRestante = montoFinal
+var pagadoAntesDeTiempo = false
 
 //recorrer cada mes del plazo elegido
 for mes in 1...plazoMeses {
@@ -129,5 +130,15 @@ for mes in 1...plazoMeses {
     }
     print("\(mes)\tS/. \(montoInicial)\tS/. \(cuotaMensual)\tS/. \(restaPorPago)")
     saldoRestante = restaPorPago
+
+    //si el saldo ya llego a 0 antes de terminar el plazo, detener los cobros
+    if saldoRestante <= 0 && mes < plazoMeses {
+        pagadoAntesDeTiempo = true
+        print("--------------------------------------")
+        print("¡Préstamo pagado en su totalidad en el mes \(mes) gracias al pago adelantado!")
+        break
+    }
 }
-print("--------------------------------------")
+if !pagadoAntesDeTiempo {
+    print("--------------------------------------")
+}
