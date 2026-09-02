@@ -1,6 +1,6 @@
 import Foundation
 
-// ===== CALENDARIO DE PAGOS =====
+// ===== CALENDARIO DE PAGOS (VERSIÓN CON IA) =====
 // Ingresa nombre, precio unitario y cantidad del producto,
 // y calcula el monto total de la compra
 
@@ -13,6 +13,11 @@ let tasaInteres24Meses = 0.25  // 25%
 func redondear(_ valor: Double) -> Double {
     return (valor * 100).rounded() / 100
 }
+
+// ===== FECHA Y HORA =====
+let formateadorFecha = DateFormatter()
+formateadorFecha.dateFormat = "dd/MM/yyyy HH:mm:ss"
+let fechaHoraActual = formateadorFecha.string(from: Date())
 
 print("Ingrese el nombre del producto")
 let producto = readLine() ?? ""
@@ -71,6 +76,7 @@ let cuotaMensual = redondear(montoFinal / Double(plazoMeses))
 
 print("--------------------------------------")
 print("====== PLAN DE PAGO ======")
+print("Fecha y hora: \(fechaHoraActual)")
 print("Producto: \(producto)")
 print("Monto de compra: S/. \(montoTotalCompra)")
 print("Interés: \(tasaInteres * 100)%")
