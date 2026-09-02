@@ -9,16 +9,35 @@ let tasaInteres6Meses = 0.08   // 8%
 let tasaInteres12Meses = 0.15  // 15%
 let tasaInteres24Meses = 0.25  // 25%
 
+// funcion para redondear montos a 2 decimales
+func redondear(_ valor: Double) -> Double {
+    return (valor * 100).rounded() / 100
+}
+
 print("Ingrese el nombre del producto")
 let producto = readLine() ?? ""
 
-print("Ingrese el precio unitario del producto")
-let precioUnitario = Double(readLine() ?? "0") ?? 0.0
+// validar que el precio unitario sea mayor a 0
+var precioUnitario = 0.0
+repeat {
+    print("Ingrese el precio unitario del producto")
+    precioUnitario = Double(readLine() ?? "0") ?? 0.0
+    if precioUnitario <= 0 {
+        print("El precio debe ser mayor a 0, intente de nuevo")
+    }
+} while precioUnitario <= 0
 
-print("Ingrese la cantidad del producto")
-let cantidad = Int(readLine() ?? "0") ?? 0
+// validar que la cantidad sea mayor a 0
+var cantidad = 0
+repeat {
+    print("Ingrese la cantidad del producto")
+    cantidad = Int(readLine() ?? "0") ?? 0
+    if cantidad <= 0 {
+        print("La cantidad debe ser mayor a 0, intente de nuevo")
+    }
+} while cantidad <= 0
 
-let montoTotalCompra = precioUnitario * Double(cantidad)
+let montoTotalCompra = redondear(precioUnitario * Double(cantidad))
 
 print("--------------------------------------")
 print("Producto: \(producto)")
@@ -26,8 +45,14 @@ print("Monto total de la compra: S/. \(montoTotalCompra)")
 print("--------------------------------------")
 
 // ===== SELECCIÓN DE PLAN DE PAGO =====
-print("Elija el plan de pago en meses: 6, 12 o 24")
-let plazoMeses = Int(readLine() ?? "0") ?? 0
+var plazoMeses = 0
+repeat {
+    print("Elija el plan de pago en meses: 6, 12 o 24")
+    plazoMeses = Int(readLine() ?? "0") ?? 0
+    if plazoMeses != 6 && plazoMeses != 12 && plazoMeses != 24 {
+        print("Plan no válido, ingrese 6, 12 o 24")
+    }
+} while plazoMeses != 6 && plazoMeses != 12 && plazoMeses != 24
 
 var tasaInteres = 0.0
 
@@ -36,16 +61,13 @@ if plazoMeses == 6 {
     tasaInteres = tasaInteres6Meses
 } else if plazoMeses == 12 {
     tasaInteres = tasaInteres12Meses
-} else if plazoMeses == 24 {
-    tasaInteres = tasaInteres24Meses
 } else {
-    print("Plan no válido, se asignará 6 meses por defecto")
-    tasaInteres = tasaInteres6Meses
+    tasaInteres = tasaInteres24Meses
 }
 
 //hallar el monto final con interes y la cuota mensual
-let montoFinal = montoTotalCompra * (1 + tasaInteres)
-let cuotaMensual = montoFinal / Double(plazoMeses)
+let montoFinal = redondear(montoTotalCompra * (1 + tasaInteres))
+let cuotaMensual = redondear(montoFinal / Double(plazoMeses))
 
 print("--------------------------------------")
 print("====== PLAN DE PAGO ======")
@@ -65,7 +87,10 @@ var saldoRestante = montoFinal
 //recorrer cada mes del plazo elegido
 for mes in 1...plazoMeses {
     let montoInicial = saldoRestante
-    let restaPorPago = saldoRestante - cuotaMensual
+    var restaPorPago = redondear(saldoRestante - cuotaMensual)
+    if mes == plazoMeses {
+        restaPorPago = 0.0
+    }
     print("\(mes)\tS/. \(montoInicial)\tS/. \(cuotaMensual)\tS/. \(restaPorPago)")
     saldoRestante = restaPorPago
 }
