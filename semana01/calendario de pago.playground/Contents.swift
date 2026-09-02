@@ -24,3 +24,34 @@ print("--------------------------------------")
 print("Producto: \(producto)")
 print("Monto total de la compra: S/. \(montoTotalCompra)")
 print("--------------------------------------")
+
+// ===== SELECCIÓN DE PLAN DE PAGO =====
+print("Elija el plan de pago en meses: 6, 12 o 24")
+let plazoMeses = Int(readLine() ?? "0") ?? 0
+
+var tasaInteres = 0.0
+
+//hallar la tasa segun el plan elegido
+if plazoMeses == 6 {
+    tasaInteres = tasaInteres6Meses
+} else if plazoMeses == 12 {
+    tasaInteres = tasaInteres12Meses
+} else if plazoMeses == 24 {
+    tasaInteres = tasaInteres24Meses
+} else {
+    print("Plan no válido, se asignará 6 meses por defecto")
+    tasaInteres = tasaInteres6Meses
+}
+
+//hallar el monto final con interes y la cuota mensual
+let montoFinal = montoTotalCompra * (1 + tasaInteres)
+let cuotaMensual = montoFinal / Double(plazoMeses)
+
+print("--------------------------------------")
+print("====== PLAN DE PAGO ======")
+print("Producto: \(producto)")
+print("Monto de compra: S/. \(montoTotalCompra)")
+print("Interés: \(tasaInteres * 100)%")
+print("Monto final: S/. \(montoFinal)")
+print("Cuota por mes: S/. \(cuotaMensual)")
+print("--------------------------------------")
