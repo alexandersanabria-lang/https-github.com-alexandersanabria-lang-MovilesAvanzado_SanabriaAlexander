@@ -115,6 +115,15 @@ var saldoRestante = montoFinal
 for mes in 1...plazoMeses {
     let montoInicial = saldoRestante
     var restaPorPago = redondear(saldoRestante - cuotaMensual)
+
+    //aplicar el pago adelantado si corresponde a este mes
+    if mes == mesPagoAdelantado {
+        restaPorPago = redondear(restaPorPago - montoAdicional)
+    }
+
+    if restaPorPago < 0 {
+        restaPorPago = 0.0
+    }
     if mes == plazoMeses {
         restaPorPago = 0.0
     }
