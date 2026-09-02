@@ -55,3 +55,18 @@ print("Interés: \(tasaInteres * 100)%")
 print("Monto final: S/. \(montoFinal)")
 print("Cuota por mes: S/. \(cuotaMensual)")
 print("--------------------------------------")
+
+// ===== CUADRO MES A MES =====
+print("====== DETALLE DE PAGOS ======")
+print("Mes\tMonto Inicial\tCuota Mensual\tResta por Pago")
+
+var saldoRestante = montoFinal
+
+//recorrer cada mes del plazo elegido
+for mes in 1...plazoMeses {
+    let montoInicial = saldoRestante
+    let restaPorPago = saldoRestante - cuotaMensual
+    print("\(mes)\tS/. \(montoInicial)\tS/. \(cuotaMensual)\tS/. \(restaPorPago)")
+    saldoRestante = restaPorPago
+}
+print("--------------------------------------")
