@@ -84,6 +84,27 @@ print("Monto final: S/. \(montoFinal)")
 print("Cuota por mes: S/. \(cuotaMensual)")
 print("--------------------------------------")
 
+// ===== PAGO ADELANTADO =====
+var mesPagoAdelantado = -1
+repeat {
+    print("¿En qué mes hará un pago adelantado? (0 = ninguno, máximo \(plazoMeses))")
+    mesPagoAdelantado = Int(readLine() ?? "-1") ?? -1
+    if mesPagoAdelantado < 0 || mesPagoAdelantado > plazoMeses {
+        print("Mes no válido, ingrese un número entre 0 y \(plazoMeses)")
+    }
+} while mesPagoAdelantado < 0 || mesPagoAdelantado > plazoMeses
+
+var montoAdicional = 0.0
+if mesPagoAdelantado > 0 {
+    repeat {
+        print("Ingrese el monto adicional a pagar en el mes \(mesPagoAdelantado)")
+        montoAdicional = Double(readLine() ?? "0") ?? -1
+        if montoAdicional <= 0 {
+            print("El monto adicional debe ser mayor a 0, intente de nuevo")
+        }
+    } while montoAdicional <= 0
+}
+
 // ===== CUADRO MES A MES =====
 print("====== DETALLE DE PAGOS ======")
 print("Mes\tMonto Inicial\tCuota Mensual\tResta por Pago")
