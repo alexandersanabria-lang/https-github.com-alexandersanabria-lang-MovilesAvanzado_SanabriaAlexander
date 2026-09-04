@@ -325,3 +325,72 @@ print("\n===== RANKING (mayor a menor) =====") // Encabezado del ranking
 for (nombre, promedio) in ordenadosPorPromedio { // Recorre la lista ya ordenada
     print("\(nombre): \(promedio)") // Muestra cada alumno con su promedio, en orden
 }
+
+// ===== EJERCICIO 7: Inventario con menú (con IA) =====
+// Desarrollado por: Alexander Sanabria
+
+var preciosN7: [String: Double] = [:] // Diccionario: nombre del producto -> precio
+var stocksN7: [String: Int] = [:] // Diccionario: nombre del producto -> stock
+
+print("¿Cuántos productos vas a registrar?") // Pregunta cuántos productos se cargarán al inicio
+let cantProductosN7 = Int(readLine() ?? "") ?? 0 // Convierte la respuesta a Int, si falla usa 0
+
+for i in 1...cantProductosN7 { // Repite una vez por cada producto a registrar
+    print("\nProducto \(i) - Nombre:") // Pide el nombre del producto
+    let nombreN7 = readLine() ?? "" // Lee el nombre, si falla usa cadena vacía
+    print("Precio:") // Pide el precio del producto
+    let precioN7 = Double(readLine() ?? "") ?? 0 // Convierte el precio a Double, si falla usa 0
+    print("Stock:") // Pide el stock del producto
+    let stockN7 = Int(readLine() ?? "") ?? 0 // Convierte el stock a Int, si falla usa 0
+    preciosN7[nombreN7] = precioN7 // Guarda el precio en el diccionario de precios
+    stocksN7[nombreN7] = stockN7 // Guarda el stock en el diccionario de stocks
+}
+
+var continuarMenu = true // Bandera que controla si el menú sigue mostrándose
+while continuarMenu { // Se repite mientras la bandera sea true
+    print("\n===== MENÚ INVENTARIO =====") // Encabezado del menú
+    print("1) Ver inventario") // Opción 1
+    print("2) Buscar producto") // Opción 2
+    print("3) Productos con stock bajo") // Opción 3
+    print("4) Valor total del inventario") // Opción 4
+    print("5) Salir") // Opción 5
+    print("Elige una opción:") // Pide al usuario que elija
+    let opcionN7 = readLine() ?? "" // Lee la opción elegida como texto
+
+    switch opcionN7 { // Evalúa qué opción fue elegida
+    case "1": // Caso: ver inventario completo
+        print("\n===== INVENTARIO =====") // Encabezado del reporte
+        for (nombre, precio) in preciosN7 { // Recorre todos los productos
+            let stock = stocksN7[nombre] ?? 0 // Obtiene el stock de ese producto, si no existe usa 0
+            print("\(nombre): S/. \(precio) - Stock: \(stock)") // Muestra nombre, precio y stock
+        }
+    case "2": // Caso: buscar un producto puntual
+        print("Nombre del producto a buscar:") // Pide el nombre a buscar
+        let buscarN7 = readLine() ?? "" // Lee el nombre ingresado
+        if let precioEncontrado = preciosN7[buscarN7] { // Busca el precio de forma segura con Optional
+            let stockEncontrado = stocksN7[buscarN7] ?? 0 // Obtiene el stock correspondiente
+            print("\(buscarN7): S/. \(precioEncontrado) - Stock: \(stockEncontrado)") // Muestra el resultado
+        } else {
+            print("Producto no encontrado") // Mensaje si no existe el producto
+        }
+    case "3": // Caso: mostrar productos con stock bajo
+        print("\n===== STOCK BAJO (< 5) =====") // Encabezado del reporte
+        for (nombre, stock) in stocksN7 { // Recorre todos los stocks
+            if stock < 5 { // Filtra los que tienen menos de 5 unidades
+                print("\(nombre): \(stock) unidades") // Muestra el producto con stock bajo
+            }
+        }
+    case "4": // Caso: calcular el valor total del inventario
+        var valorTotalN7 = 0.0 // Acumulador del valor total
+        for (nombre, precio) in preciosN7 { // Recorre cada producto
+            let stock = stocksN7[nombre] ?? 0 // Obtiene su stock
+            valorTotalN7 += precio * Double(stock) // Suma precio × stock al acumulador
+        }
+        print("Valor total del inventario: S/. \(valorTotalN7)") // Muestra el resultado
+    case "5": // Caso: salir del menú
+        print("Saliendo del inventario...") // Mensaje de despedida
+        continuarMenu = false // Cambia la bandera a false para terminar el while
+    default: // Cualquier otra opción no contemplada
+        print("Opción inválida, intenta de nuevo") // Mensaje de error
+    }
+}
