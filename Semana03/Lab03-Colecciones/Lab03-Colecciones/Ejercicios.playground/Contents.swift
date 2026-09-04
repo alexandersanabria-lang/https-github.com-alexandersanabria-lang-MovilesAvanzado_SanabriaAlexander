@@ -265,3 +265,63 @@ print(sep)
 print("TOTAL: S/. \(totalFinal)")
 print(sep)
 print("¡Gracias por su compra, \(cliente)!")
+
+// ===== EJERCICIO 6: Gestión de Notas (con IA) =====
+// Desarrollado por: Alexander Sanabria
+
+var notasAlumnos: [String: [Double]] = [:] // Diccionario: nombre del alumno -> array de sus 3 notas
+
+print("¿Cuántos alumnos vas a registrar?") // Pregunta cuántos alumnos se van a ingresar
+let cantAlumnosN6 = Int(readLine() ?? "") ?? 0 // Convierte la respuesta a Int, si falla usa 0
+
+for i in 1...cantAlumnosN6 { // Repite una vez por cada alumno
+    print("\nAlumno \(i) - Nombre:") // Pide el nombre del alumno actual
+    let nombreN6 = readLine() ?? "" // Lee el nombre, si falla usa cadena vacía
+
+    var notasIndividuales: [Double] = [] // Array temporal para las 3 notas de este alumno
+    for j in 1...3 { // Repite 3 veces, una por cada nota
+        print("Nota \(j) de \(nombreN6):") // Pide la nota j del alumno
+        let notaN6 = Double(readLine() ?? "") ?? 0 // Convierte la entrada a Double, si falla usa 0
+        notasIndividuales.append(notaN6) // Agrega la nota al array temporal
+    }
+    notasAlumnos[nombreN6] = notasIndividuales // Guarda el array de notas en el diccionario bajo el nombre del alumno
+}
+
+print("\n===== PROMEDIOS Y CLASIFICACIÓN =====") // Encabezado de la sección de resultados
+var promedios: [String: Double] = [:] // Diccionario: nombre -> promedio, para usarlo después al ordenar
+
+for (nombre, notas) in notasAlumnos { // Recorre cada alumno del diccionario
+    let sumaN6 = notas.reduce(0, +) // Suma todas las notas del array usando reduce
+    let promedioN6 = sumaN6 / Double(notas.count) // Calcula el promedio dividiendo entre la cantidad de notas
+    promedios[nombre] = promedioN6 // Guarda el promedio calculado en el diccionario de promedios
+
+    var clasificacion = "" // Variable donde se guardará el texto de clasificación
+    switch promedioN6 { // Evalúa el promedio para clasificarlo
+    case 17...20: clasificacion = "Excelente" // De 17 a 20 es Excelente
+    case 14..<17: clasificacion = "Bueno" // De 14 a menos de 17 es Bueno
+    case 13..<14: clasificacion = "Aprobado" // De 13 a menos de 14 es Aprobado
+    default: clasificacion = "Desaprobado" // Cualquier otro caso (menor a 13) es Desaprobado
+    }
+    print("\(nombre): Promedio \(promedioN6) → \(clasificacion)") // Muestra el resultado de este alumno
+}
+
+// ===== ESTADÍSTICAS GENERALES =====
+let todosLosPromedios = Array(promedios.values) // Convierte los valores del diccionario de promedios en un array
+let promedioGeneral = todosLosPromedios.reduce(0, +) / Double(todosLosPromedios.count) // Promedio de todos los promedios
+let notaMasAlta = todosLosPromedios.max() ?? 0 // Encuentra el promedio más alto, si no hay usa 0
+let notaMasBaja = todosLosPromedios.min() ?? 0 // Encuentra el promedio más bajo, si no hay usa 0
+let cantidadAprobados = todosLosPromedios.filter { $0 >= 13 }.count // Cuenta cuántos promedios son >= 13 (aprobados)
+let porcentajeAprobados = (Double(cantidadAprobados) / Double(todosLosPromedios.count)) * 100 // Calcula el % de aprobados
+
+print("\n===== ESTADÍSTICAS GENERALES =====") // Encabezado de estadísticas
+print("Promedio general: \(promedioGeneral)") // Muestra el promedio general del salón
+print("Nota más alta: \(notaMasAlta)") // Muestra la nota (promedio) más alta
+print("Nota más baja: \(notaMasBaja)") // Muestra la nota (promedio) más baja
+print("Porcentaje de aprobados: \(porcentajeAprobados)%") // Muestra el porcentaje de aprobados
+
+// ===== ORDENAR POR PROMEDIO =====
+let ordenadosPorPromedio = promedios.sorted { $0.value > $1.value } // Ordena el diccionario de mayor a menor promedio
+print("\n===== RANKING (mayor a menor) =====") // Encabezado del ranking
+for (nombre, promedio) in ordenadosPorPromedio { // Recorre la lista ya ordenada
+    print("\(nombre): \(promedio)") // Muestra cada alumno con su promedio, en orden
+}
