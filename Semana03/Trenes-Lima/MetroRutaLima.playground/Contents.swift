@@ -286,24 +286,101 @@ func mostrarEstacionesDeLinea(numero: Int) {
 // RF03 - Buscar una estación
 func buscarEstacion(nombre: String) {
 
-    guard let estacion = obtenerNombreEstacion(nombre) else {
+    guard let estacion =
+        obtenerNombreEstacion(nombre)
+    else {
+
         print("\n No se encontró la estación indicada.")
         return
     }
 
-    let lineasEncontradas = obtenerLineasDeEstacion(estacion)
+
+    let lineasEncontradas =
+        obtenerLineasDeEstacion(estacion)
+
 
     print("\n======================================")
-    print("          ESTACIÓN ENCONTRADA")
+    print("        INFORMACIÓN DE ESTACIÓN")
     print("======================================")
 
     print("\nEstación: \(estacion)")
 
+
     for numero in lineasEncontradas.sorted() {
 
-        if let linea = buscarLinea(numero: numero) {
-            print("Línea: \(linea.nombre)")
-            print("Estado: \(linea.estado.rawValue)")
+        guard let linea =
+            buscarLinea(numero: numero),
+
+              let posicion =
+            obtenerIndiceEstacion(
+                estacion,
+                en: linea
+            )
+
+        else {
+            continue
+        }
+
+
+        print("\nLínea: \(linea.nombre)")
+        print("Estado: \(linea.estado.rawValue)")
+
+        print(
+            "Posición: \(posicion + 1) de " +
+            "\(linea.estaciones.count)"
+        )
+
+
+        if posicion > 0 {
+
+            print(
+                "Estación anterior: " +
+                linea.estaciones[posicion - 1]
+            )
+
+        } else {
+
+            print("Estación anterior: Terminal")
+        }
+
+
+        if posicion < linea.estaciones.count - 1 {
+
+            print(
+                "Estación siguiente: " +
+                linea.estaciones[posicion + 1]
+            )
+
+        } else {
+
+            print("Estación siguiente: Terminal")
+        }
+
+
+        if let primera = linea.estaciones.first,
+           let ultima = linea.estaciones.last {
+
+            print("Terminal 1: \(primera)")
+            print("Terminal 2: \(ultima)")
+        }
+    }
+
+
+    let lugares =
+        lugaresInteres.filter {
+
+            normalizarTexto($0.estacion) ==
+            normalizarTexto(estacion)
+        }
+
+
+    if !lugares.isEmpty {
+
+        print("\nLugares cercanos:")
+
+        for lugar in lugares {
+
+            print("- \(lugar.nombre)")
         }
     }
 }
@@ -560,27 +637,192 @@ func buscarCaminoDeLineas(
 
 
 // Referencias cercanas a determinadas estaciones
-let referenciasCercanas: [String: [String]] = [
-    "Gamarra": [
-        "Emporio Comercial de Gamarra"
-    ],
+// =====================================================
+// MARK: - LUGARES DE INTERÉS
+// =====================================================
 
-    "La Cultura": [
-        "Museo de la Nación",
-        "Biblioteca Nacional del Perú"
-    ],
+struct LugarInteres {
 
-    "Mercado Santa Anita": [
-        "Gran Mercado Mayorista de Lima"
-    ],
+    let nombre: String
 
-    "Hermilio Valdizán": [
-        "Hospital Hermilio Valdizán"
-    ],
+    let estacion: String
 
-    "Evitamiento": [
-        "Puente Santa Anita"
-    ]
+    let linea: Int
+
+    let palabrasClave: [String]
+}
+
+
+let lugaresInteres: [LugarInteres] = [
+
+    LugarInteres(
+        nombre: "Emporio Comercial de Gamarra",
+        estacion: "Gamarra",
+        linea: 1,
+        palabrasClave: [
+            "gamarra",
+            "emporio",
+            "ropa",
+            "compras"
+        ]
+    ),
+
+    LugarInteres(
+        nombre: "Biblioteca Nacional del Perú",
+        estacion: "La Cultura",
+        linea: 1,
+        palabrasClave: [
+            "biblioteca",
+            "biblioteca nacional",
+            "bn",
+            "san borja"
+        ]
+    ),
+
+    LugarInteres(
+        nombre: "Gran Teatro Nacional",
+        estacion: "La Cultura",
+        linea: 1,
+        palabrasClave: [
+            "teatro",
+            "gran teatro",
+            "cultura"
+        ]
+    ),
+
+    LugarInteres(
+        nombre: "Mall del Sur",
+        estacion: "Atocongo",
+        linea: 1,
+        palabrasClave: [
+            "mall del sur",
+            "mall",
+            "centro comercial"
+        ]
+    ),
+
+    LugarInteres(
+        nombre: "Universidad Nacional Mayor de San Marcos",
+        estacion: "San Marcos",
+        linea: 2,
+        palabrasClave: [
+            "san marcos",
+            "universidad",
+            "unmsm"
+        ]
+    ),
+
+    LugarInteres(
+        nombre: "Real Plaza Centro Cívico",
+        estacion: "Estación Central",
+        linea: 2,
+        palabrasClave: [
+            "real plaza",
+            "centro civico",
+            "centro comercial"
+        ]
+    ),
+
+    LugarInteres(
+        nombre: "Mall Aventura Santa Anita",
+        estacion: "Evitamiento",
+        linea: 2,
+        palabrasClave: [
+            "mall aventura",
+            "mall santa anita",
+            "mall aventura santa anita",
+            "centro comercial santa anita",
+            "santa anita"
+        ]
+    ),
+
+    LugarInteres(
+        nombre: "Mercado Mayorista de Santa Anita",
+        estacion: "Mercado Santa Anita",
+        linea: 2,
+        palabrasClave: [
+            "mercado",
+            "mercado mayorista",
+            "mayorista santa anita"
+        ]
+    ),
+
+    LugarInteres(
+        nombre: "Circuito Mágico del Agua",
+        estacion: "Parque de la Reserva",
+        linea: 3,
+        palabrasClave: [
+            "circuito magico",
+            "circuito magico del agua",
+            "parque de la reserva",
+            "fuentes"
+        ]
+    ),
+
+    LugarInteres(
+        nombre: "Centro de Miraflores",
+        estacion: "Miraflores",
+        linea: 3,
+        palabrasClave: [
+            "miraflores",
+            "centro miraflores"
+        ]
+    ),
+
+    LugarInteres(
+        nombre: "Aeropuerto Internacional Jorge Chávez",
+        estacion: "Aeropuerto",
+        linea: 4,
+        palabrasClave: [
+            "aeropuerto",
+            "jorge chavez",
+            "vuelo"
+        ]
+    ),
+
+    LugarInteres(
+        nombre: "Huaca Pucllana",
+        estacion: "Huaca Pucllana",
+        linea: 5,
+        palabrasClave: [
+            "huaca",
+            "huaca pucllana",
+            "arqueologia"
+        ]
+    ),
+
+    LugarInteres(
+        nombre: "Centro de Barranco",
+        estacion: "Barranco",
+        linea: 5,
+        palabrasClave: [
+            "barranco",
+            "puente de los suspiros",
+            "turismo"
+        ]
+    ),
+
+    LugarInteres(
+        nombre: "Universidad de Lima",
+        estacion: "Universidad de Lima",
+        linea: 6,
+        palabrasClave: [
+            "universidad de lima",
+            "ulima",
+            "universidad"
+        ]
+    ),
+
+    LugarInteres(
+        nombre: "Camacho",
+        estacion: "Camacho",
+        linea: 6,
+        palabrasClave: [
+            "camacho",
+            "centro comercial",
+            "la molina"
+        ]
+    )
 ]
 
 
@@ -617,45 +859,58 @@ func buscarReferencia(_ texto: String) {
 
     let busqueda = normalizarTexto(texto)
 
-    var resultados: [(estacion: String, lugar: String)] = []
+    var resultados: [LugarInteres] = []
 
-    for (estacion, lugares) in referenciasCercanas {
 
-        for lugar in lugares {
+    for lugar in lugaresInteres {
 
-            let estacionNormalizada = normalizarTexto(estacion)
-            let lugarNormalizado = normalizarTexto(lugar)
+        let coincideNombre =
+            normalizarTexto(lugar.nombre)
+                .contains(busqueda)
 
-            if estacionNormalizada.contains(busqueda) ||
-                lugarNormalizado.contains(busqueda) {
 
-                resultados.append(
-                    (estacion: estacion, lugar: lugar)
-                )
+        let coincideEstacion =
+            normalizarTexto(lugar.estacion)
+                .contains(busqueda)
+
+
+        let coincidePalabra =
+            lugar.palabrasClave.contains {
+
+                normalizarTexto($0)
+                    .contains(busqueda)
             }
+
+
+        if coincideNombre ||
+           coincideEstacion ||
+           coincidePalabra {
+
+            resultados.append(lugar)
         }
     }
 
-    if resultados.isEmpty {
 
-        print("\n No se encontró una referencia relacionada.")
+    guard !resultados.isEmpty else {
+
+        print("\n No encontramos lugares relacionados.")
+        print("Prueba con otra palabra.")
+
         return
     }
 
+
     print("\n======================================")
-    print("         REFERENCIAS ENCONTRADAS")
+    print("          LUGARES ENCONTRADOS")
     print("======================================")
 
-    for resultado in resultados {
 
-        print("\nLugar: \(resultado.lugar)")
-        print("Estación cercana: \(resultado.estacion)")
+    for (indice, lugar)
+        in resultados.enumerated() {
 
-        let lineas = obtenerLineasDeEstacion(resultado.estacion)
-
-        for numero in lineas.sorted() {
-            print("Línea: Línea \(numero)")
-        }
+        print("\n\(indice + 1). \(lugar.nombre)")
+        print("Estación recomendada: \(lugar.estacion)")
+        print("Línea: Línea \(lugar.linea)")
     }
 }
 
