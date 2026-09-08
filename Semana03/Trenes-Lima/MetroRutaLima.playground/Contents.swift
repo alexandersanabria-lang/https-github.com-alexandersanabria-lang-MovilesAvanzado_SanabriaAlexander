@@ -577,3 +577,58 @@ func consultarRuta(
 
     print("\n No se encontró una ruta disponible con los datos registrados.")
 }
+
+
+
+// Lee un texto y evita que el usuario deje la entrada vacía
+func leerTextoNoVacio(mensaje: String) -> String {
+
+    while true {
+
+        print(mensaje, terminator: "")
+
+        if let entrada = readLine() {
+
+            let textoLimpio = entrada
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+
+            if !textoLimpio.isEmpty {
+                return textoLimpio
+            }
+        }
+
+        print(" Debe ingresar un valor.")
+    }
+}
+
+
+// Lee un número entero y valida la entrada
+func leerNumero(mensaje: String) -> Int {
+
+    while true {
+
+        print(mensaje, terminator: "")
+
+        if let entrada = readLine() {
+
+            let textoLimpio = entrada
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+
+            if let numero = Int(textoLimpio) {
+                return numero
+            }
+        }
+
+        print(" Ingrese un número válido.")
+    }
+}
+
+
+// Pausa el programa antes de volver al menú
+func pausar() {
+
+    print("\n--------------------------------------")
+    print("Presione ENTER para continuar.")
+
+    _ = readLine()
+}
