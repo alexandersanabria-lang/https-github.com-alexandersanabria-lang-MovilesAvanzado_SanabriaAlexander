@@ -337,11 +337,226 @@ func consultarEstadoLinea(numero: Int) {
 
 // Conexiones proyectadas entre líneas.
 // Estas conexiones no se consideran operativas actualmente.
-let conexionesProyectadas: [String: Set<Int>] = [
-    "Cabitos": [1, 3],
-    "La Cultura": [1, 4],
-    "Mercado Santa Anita": [2, 4]
+// =====================================================
+// MARK: - ENLACES CERCANOS ENTRE LÍNEAS
+// =====================================================
+
+struct EnlaceCercano {
+    let lineaA: Int
+    let estacionA: String
+
+    let lineaB: Int
+    let estacionB: String
+
+    let indicacion: String
+}
+
+
+let enlacesCercanos: [EnlaceCercano] = [
+
+    EnlaceCercano(
+        lineaA: 1,
+        estacionA: "Gamarra",
+        lineaB: 2,
+        estacionB: "28 de Julio",
+        indicacion: "Baja en Gamarra y dirígete hacia la estación 28 de Julio de la Línea 2."
+    ),
+
+    EnlaceCercano(
+        lineaA: 1,
+        estacionA: "Cabitos",
+        lineaB: 3,
+        estacionB: "Cabitos",
+        indicacion: "Realiza el cambio de línea en el sector de Cabitos."
+    ),
+
+    EnlaceCercano(
+        lineaA: 1,
+        estacionA: "La Cultura",
+        lineaB: 4,
+        estacionB: "La Cultura",
+        indicacion: "Continúa hacia el acceso correspondiente a la Línea 4 en La Cultura."
+    ),
+
+    EnlaceCercano(
+        lineaA: 1,
+        estacionA: "Villa El Salvador",
+        lineaB: 5,
+        estacionB: "Villa El Salvador",
+        indicacion: "Dirígete hacia el acceso de la Línea 5 en Villa El Salvador."
+    ),
+
+    EnlaceCercano(
+        lineaA: 1,
+        estacionA: "Atocongo",
+        lineaB: 6,
+        estacionB: "Atocongo",
+        indicacion: "Continúa hacia el acceso de la Línea 6 en el sector de Atocongo."
+    ),
+
+    EnlaceCercano(
+        lineaA: 2,
+        estacionA: "Estación Central",
+        lineaB: 3,
+        estacionB: "Estación Central",
+        indicacion: "Realiza el cambio de línea en el sector de Estación Central."
+    ),
+
+    EnlaceCercano(
+        lineaA: 2,
+        estacionA: "Carmen de la Legua",
+        lineaB: 4,
+        estacionB: "Carmen de la Legua",
+        indicacion: "Dirígete hacia el acceso de la Línea 4 en Carmen de la Legua."
+    ),
+
+    EnlaceCercano(
+        lineaA: 2,
+        estacionA: "Mercado Santa Anita",
+        lineaB: 4,
+        estacionB: "Mercado Santa Anita",
+        indicacion: "Continúa hacia el acceso cercano correspondiente a la Línea 4."
+    ),
+
+    EnlaceCercano(
+        lineaA: 3,
+        estacionA: "Conde de San Isidro",
+        lineaB: 4,
+        estacionB: "Conde de San Isidro",
+        indicacion: "Realiza el cambio entre las Líneas 3 y 4 en este sector."
+    ),
+
+    EnlaceCercano(
+        lineaA: 3,
+        estacionA: "Miraflores",
+        lineaB: 5,
+        estacionB: "Municipalidad de Miraflores",
+        indicacion: "Desde la estación Miraflores dirígete hacia Municipalidad de Miraflores para continuar por Línea 5."
+    ),
+
+    EnlaceCercano(
+        lineaA: 4,
+        estacionA: "Conde de San Isidro",
+        lineaB: 6,
+        estacionB: "Camacho",
+        indicacion: "Utiliza la conexión urbana simulada hacia Camacho para continuar por Línea 6."
+    )
 ]
+
+func buscarEnlace(
+    entre lineaA: Int,
+    y lineaB: Int
+) -> EnlaceCercano? {
+
+    return enlacesCercanos.first {
+
+        ($0.lineaA == lineaA && $0.lineaB == lineaB) ||
+        ($0.lineaA == lineaB && $0.lineaB == lineaA)
+    }
+}
+
+
+func otraLinea(
+    del enlace: EnlaceCercano,
+    desde linea: Int
+) -> Int {
+
+    if enlace.lineaA == linea {
+        return enlace.lineaB
+    }
+
+    return enlace.lineaA
+}
+
+
+func estacionSalida(
+    del enlace: EnlaceCercano,
+    para linea: Int
+) -> String {
+
+    if enlace.lineaA == linea {
+        return enlace.estacionA
+    }
+
+    return enlace.estacionB
+}
+
+
+func estacionEntrada(
+    del enlace: EnlaceCercano,
+    hacia linea: Int
+) -> String {
+
+    if enlace.lineaA == linea {
+        return enlace.estacionA
+    }
+
+    return enlace.estacionB
+}
+
+func buscarCaminoDeLineas(
+    desde inicio: Int,
+    hasta destino: Int
+) -> [Int]? {
+
+    if inicio == destino {
+        return [inicio]
+    }
+
+    var cola: [[Int]] = [[inicio]]
+
+    var visitadas: Set<Int> = [inicio]
+
+
+    while !cola.isEmpty {
+
+        let caminoActual = cola.removeFirst()
+
+        guard let lineaActual = caminoActual.last else {
+            continue
+        }
+
+
+        for enlace in enlacesCercanos {
+
+            guard enlace.lineaA == lineaActual ||
+                  enlace.lineaB == lineaActual
+            else {
+                continue
+            }
+
+
+            let siguiente = otraLinea(
+                del: enlace,
+                desde: lineaActual
+            )
+
+
+            if visitadas.contains(siguiente) {
+                continue
+            }
+
+
+            let nuevoCamino =
+                caminoActual + [siguiente]
+
+
+            if siguiente == destino {
+                return nuevoCamino
+            }
+
+
+            visitadas.insert(siguiente)
+
+            cola.append(nuevoCamino)
+        }
+    }
+
+
+    return nil
+}
+
+
 
 
 // Referencias cercanas a determinadas estaciones
@@ -373,25 +588,26 @@ let referenciasCercanas: [String: [String]] = [
 func mostrarConexiones() {
 
     print("\n======================================")
-    print("       CONEXIONES ENTRE LÍNEAS")
+    print("        ENLACES ENTRE LÍNEAS")
     print("======================================")
 
-    print("\nLas siguientes conexiones son proyectadas.")
-    print("No necesariamente están disponibles actualmente.\n")
+    print("\nLa simulación permite cambiar de línea")
+    print("mediante estaciones o accesos cercanos.\n")
 
-    for estacion in conexionesProyectadas.keys.sorted() {
 
-        if let lineas = conexionesProyectadas[estacion] {
+    for (indice, enlace) in enlacesCercanos.enumerated() {
 
-            let nombresLineas = lineas
-                .sorted()
-                .map { "Línea \($0)" }
-                .joined(separator: " <-> ")
+        print("\(indice + 1). Línea \(enlace.lineaA)")
+        print("   \(enlace.estacionA)")
 
-            print("Estación: \(estacion)")
-            print("Conexión: \(nombresLineas)")
-            print("--------------------------------------")
-        }
+        print("        ↓")
+
+        print("   \(enlace.estacionB)")
+        print("   Línea \(enlace.lineaB)")
+
+        print("   \(enlace.indicacion)")
+
+        print("--------------------------------------")
     }
 }
 
@@ -466,16 +682,17 @@ func buscarConexionProyectada(
     lineaDestino: Int
 ) -> String? {
 
-    for (estacion, lineas) in conexionesProyectadas {
-
-        if lineas.contains(lineaOrigen) &&
-            lineas.contains(lineaDestino) {
-
-            return estacion
-        }
+    guard let enlace = buscarEnlace(
+        entre: lineaOrigen,
+        y: lineaDestino
+    ) else {
+        return nil
     }
 
-    return nil
+    return estacionSalida(
+        del: enlace,
+        para: lineaOrigen
+    )
 }
 
 
