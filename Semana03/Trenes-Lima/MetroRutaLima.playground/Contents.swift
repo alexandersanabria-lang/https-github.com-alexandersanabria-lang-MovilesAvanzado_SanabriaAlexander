@@ -127,3 +127,62 @@ let lineasMetro: [Int: LineaMetro] = [
     5: linea5,
     6: linea6
 ]
+
+
+
+// Normaliza el texto para permitir búsquedas
+// sin importar mayúsculas, minúsculas o tildes.
+func normalizarTexto(_ texto: String) -> String {
+    return texto
+        .trimmingCharacters(in: .whitespacesAndNewlines)
+        .folding(options: .diacriticInsensitive, locale: .current)
+        .lowercased()
+}
+
+
+// Busca una línea por su número.
+func buscarLinea(numero: Int) -> LineaMetro? {
+    return lineasMetro[numero]
+}
+
+
+// Busca una estación en todas las líneas registradas.
+// Devuelve el nombre original de la estación si la encuentra.
+func obtenerNombreEstacion(_ nombreIngresado: String) -> String? {
+
+    let nombreNormalizado = normalizarTexto(nombreIngresado)
+
+    for linea in lineasMetro.values {
+
+        for estacion in linea.estaciones {
+
+            if normalizarTexto(estacion) == nombreNormalizado {
+                return estacion
+            }
+        }
+    }
+
+    return nil
+}
+
+
+// Obtiene las líneas a las que pertenece una estación.
+// Se utiliza Set para evitar valores repetidos.
+func obtenerLineasDeEstacion(_ nombreEstacion: String) -> Set<Int> {
+
+    var lineasEncontradas = Set<Int>()
+
+    let estacionBuscada = normalizarTexto(nombreEstacion)
+
+    for linea in lineasMetro.values {
+
+        for estacion in linea.estaciones {
+
+            if normalizarTexto(estacion) == estacionBuscada {
+                lineasEncontradas.insert(linea.numero)
+            }
+        }
+    }
+
+    return lineasEncontradas
+}
