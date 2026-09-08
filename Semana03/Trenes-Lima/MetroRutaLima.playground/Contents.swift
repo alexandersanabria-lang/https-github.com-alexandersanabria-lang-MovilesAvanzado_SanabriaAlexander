@@ -1303,7 +1303,54 @@ func pausar() {
 }
 
 
+func mostrarResumenRed() {
 
+    print("\n======================================")
+    print("          RESUMEN DE LA RED")
+    print("======================================")
+
+    print("\nLíneas disponibles: \(lineasMetro.count)")
+
+
+    var totalEstaciones = 0
+
+
+    for numero in lineasMetro.keys.sorted() {
+
+        guard let linea =
+            lineasMetro[numero]
+        else {
+            continue
+        }
+
+
+        totalEstaciones += linea.estaciones.count
+
+
+        print(
+            "\(linea.nombre): " +
+            "\(linea.estaciones.count) estaciones"
+        )
+    }
+
+
+    print("\nEstaciones registradas: \(totalEstaciones)")
+
+    print(
+        "Enlaces cercanos registrados: " +
+        "\(enlacesCercanos.count)"
+    )
+
+    print(
+        "Lugares de interés registrados: " +
+        "\(lugaresInteres.count)"
+    )
+
+
+    print("\nModo:")
+    print("Simulación académica de la red completa")
+    print("del Metro de Lima y Callao.")
+}
 
 // Muestra las opciones principales del sistema
 func mostrarMenu() {
@@ -1311,14 +1358,19 @@ func mostrarMenu() {
     print("\n======================================")
     print("            METRORUTA LIMA")
     print("======================================")
+    print("   Simulador de la red completa")
+    print("======================================")
+
     print("1. Ver líneas del Metro")
     print("2. Consultar estaciones de una línea")
     print("3. Buscar una estación")
     print("4. Consultar estado de una línea")
-    print("5. Ver conexiones entre líneas")
-    print("6. Consultar ruta entre estaciones")
-    print("7. Buscar referencia o lugar cercano")
+    print("5. Ver enlaces entre líneas")
+    print("6. Planificar un viaje")
+    print("7. Buscar lugar o referencia")
+    print("8. Ver resumen de la red")
     print("0. Salir")
+
     print("======================================")
 }
 
@@ -1405,7 +1457,7 @@ func ejecutarPrograma() {
         case 6:
 
             print("\n======================================")
-            print("           CONSULTAR RUTA")
+            print("          PLANIFICAR VIAJE")
             print("======================================")
 
             let origen = leerTextoNoVacio(
@@ -1434,6 +1486,12 @@ func ejecutarPrograma() {
             buscarReferencia(
                 referencia
             )
+
+            pausar()
+            
+        case 8:
+
+            mostrarResumenRed()
 
             pausar()
 
