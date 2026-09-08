@@ -632,3 +632,163 @@ func pausar() {
 
     _ = readLine()
 }
+
+
+
+
+// Muestra las opciones principales del sistema
+func mostrarMenu() {
+
+    print("\n======================================")
+    print("            METRORUTA LIMA")
+    print("======================================")
+    print("1. Ver líneas del Metro")
+    print("2. Consultar estaciones de una línea")
+    print("3. Buscar una estación")
+    print("4. Consultar estado de una línea")
+    print("5. Ver conexiones entre líneas")
+    print("6. Consultar ruta entre estaciones")
+    print("7. Buscar referencia o lugar cercano")
+    print("0. Salir")
+    print("======================================")
+}
+
+
+// Controla la ejecución completa del programa
+func ejecutarPrograma() {
+
+    var programaActivo = true
+
+    print("======================================")
+    print("      BIENVENIDO A METRORUTA LIMA")
+    print("======================================")
+    print("Consulta información del Metro")
+    print("de Lima y Callao desde terminal.")
+
+    while programaActivo {
+
+        mostrarMenu()
+
+        let opcion = leerNumero(
+            mensaje: "Seleccione una opción: "
+        )
+
+        switch opcion {
+
+        
+        case 1:
+
+            mostrarLineas()
+            pausar()
+
+
+        
+        case 2:
+
+            let numeroLinea = leerNumero(
+                mensaje: "\nIngrese el número de línea: "
+            )
+
+            mostrarEstacionesDeLinea(
+                numero: numeroLinea
+            )
+
+            pausar()
+
+
+        
+        case 3:
+
+            let nombreEstacion = leerTextoNoVacio(
+                mensaje: "\nIngrese el nombre de la estación: "
+            )
+
+            buscarEstacion(
+                nombre: nombreEstacion
+            )
+
+            pausar()
+
+
+        
+        case 4:
+
+            let numeroLinea = leerNumero(
+                mensaje: "\nIngrese el número de línea: "
+            )
+
+            consultarEstadoLinea(
+                numero: numeroLinea
+            )
+
+            pausar()
+
+
+        
+        case 5:
+
+            mostrarConexiones()
+
+            pausar()
+
+
+        
+        case 6:
+
+            print("\n======================================")
+            print("           CONSULTAR RUTA")
+            print("======================================")
+
+            let origen = leerTextoNoVacio(
+                mensaje: "Estación de origen: "
+            )
+
+            let destino = leerTextoNoVacio(
+                mensaje: "Estación de destino: "
+            )
+
+            consultarRuta(
+                origen: origen,
+                destino: destino
+            )
+
+            pausar()
+
+
+        
+        case 7:
+
+            let referencia = leerTextoNoVacio(
+                mensaje: "\nIngrese un lugar o referencia: "
+            )
+
+            buscarReferencia(
+                referencia
+            )
+
+            pausar()
+
+
+        
+        case 0:
+
+            programaActivo = false
+
+            print("\n======================================")
+            print("Gracias por utilizar MetroRuta Lima 🚇")
+            print("======================================\n")
+
+
+        
+        default:
+
+            print("\n Opción no válida. Intente nuevamente.")
+
+            pausar()
+        }
+    }
+}
+
+
+
+ejecutarPrograma()
