@@ -397,3 +397,183 @@ func buscarReferencia(_ texto: String) {
         }
     }
 }
+
+
+
+
+// Busca la posición de una estación dentro de una línea
+func obtenerIndiceEstacion(
+    _ estacion: String,
+    en linea: LineaMetro
+) -> Int? {
+
+    let estacionBuscada = normalizarTexto(estacion)
+
+    return linea.estaciones.firstIndex {
+        normalizarTexto($0) == estacionBuscada
+    }
+}
+
+
+// Busca si existe una conexión proyectada entre dos líneas
+func buscarConexionProyectada(
+    lineaOrigen: Int,
+    lineaDestino: Int
+) -> String? {
+
+    for (estacion, lineas) in conexionesProyectadas {
+
+        if lineas.contains(lineaOrigen) &&
+            lineas.contains(lineaDestino) {
+
+            return estacion
+        }
+    }
+
+    return nil
+}
+
+
+// RF06 - Consultar una ruta entre dos estaciones
+func consultarRuta(
+    origen: String,
+    destino: String
+) {
+
+    // Validar estación de origen
+    guard let origenReal = obtenerNombreEstacion(origen) else {
+        print("\n La estación de origen no está registrada.")
+        return
+    }
+
+    // Validar estación de destino
+    guard let destinoReal = obtenerNombreEstacion(destino) else {
+        print("\n La estación de destino no está registrada.")
+        return
+    }
+
+    // Evitar origen y destino iguales
+    if normalizarTexto(origenReal) == normalizarTexto(destinoReal) {
+        print("\n El origen y el destino son la misma estación.")
+        return
+    }
+
+    let lineasOrigen = obtenerLineasDeEstacion(origenReal)
+    let lineasDestino = obtenerLineasDeEstacion(destinoReal)
+
+    print("\n======================================")
+    print("             RESULTADO")
+    print("======================================")
+
+    print("\nOrigen: \(origenReal)")
+    print("Destino: \(destinoReal)")
+
+
+    
+
+    let lineasComunes = lineasOrigen.intersection(lineasDestino)
+
+    if let numeroLinea = lineasComunes.sorted().first,
+       let linea = buscarLinea(numero: numeroLinea),
+       let indiceOrigen = obtenerIndiceEstacion(origenReal, en: linea),
+       let indiceDestino = obtenerIndiceEstacion(destinoReal, en: linea) {
+
+        let cantidadTramos = abs(indiceDestino - indiceOrigen)
+
+        print("\n RUTA DIRECTA")
+        print("Utilice la \(linea.nombre).")
+
+        // Determinar dirección
+        if indiceDestino > indiceOrigen {
+
+            if let ultimaEstacion = linea.estaciones.last {
+                print("Dirección: \(ultimaEstacion)")
+            }
+
+        } else {
+
+            if let primeraEstacion = linea.estaciones.first {
+                print("Dirección: \(primeraEstacion)")
+            }
+        }
+
+        print("Tramos de recorrido: \(cantidadTramos)")
+
+        print("\nRecorrido:")
+
+        // Recorrido hacia adelante
+        if indiceOrigen < indiceDestino {
+
+            for indice in indiceOrigen...indiceDestino {
+
+                if indice == indiceOrigen {
+                    print(" \(linea.estaciones[indice])")
+
+                } else if indice == indiceDestino {
+                    print(" \(linea.estaciones[indice])")
+
+                } else {
+                    print("• \(linea.estaciones[indice])")
+                }
+            }
+
+        } else {
+
+            // Recorrido hacia atrás
+            for indice in stride(
+                from: indiceOrigen,
+                through: indiceDestino,
+                by: -1
+            ) {
+
+                if indice == indiceOrigen {
+                    print(" \(linea.estaciones[indice])")
+
+                } else if indice == indiceDestino {
+                    print(" \(linea.estaciones[indice])")
+
+                } else {
+                    print(" \(linea.estaciones[indice])")
+                }
+            }
+        }
+
+        return
+    }
+
+
+    
+
+    for lineaOrigen in lineasOrigen {
+
+        for lineaDestino in lineasDestino {
+
+            if let conexion = buscarConexionProyectada(
+                lineaOrigen: lineaOrigen,
+                lineaDestino: lineaDestino
+            ) {
+
+                print("\n CONEXIÓN PROYECTADA")
+
+                print(
+                    "Existe una conexión proyectada entre " +
+                    "Línea \(lineaOrigen) y Línea \(lineaDestino)."
+                )
+
+                print("Punto de conexión: \(conexion)")
+
+                print(
+                    "Esta conexión no se considera una ruta " +
+                    "operativa actualmente."
+                )
+
+                return
+            }
+        }
+    }
+
+
+    
+
+    print("\n No se encontró una ruta disponible con los datos registrados.")
+}
