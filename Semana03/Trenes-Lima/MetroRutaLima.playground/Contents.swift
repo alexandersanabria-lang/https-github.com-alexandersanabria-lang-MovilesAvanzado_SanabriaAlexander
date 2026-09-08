@@ -3,9 +3,8 @@ import Foundation
 
 // Representa el estado actual de una línea del Metro
 enum EstadoLinea: String {
-    case operativa = "Operativa"
-    case operacionParcial = "Operación parcial / en construcción"
-    case planificacion = "En planificación"
+    case operativa = "Operativa actualmente"
+    case simulada = "Disponible en la simulación"
 }
 
 
@@ -58,61 +57,107 @@ let linea1 = LineaMetro(
 )
 
 
-// Línea 2
 let linea2 = LineaMetro(
     numero: 2,
     nombre: "Línea 2",
-    estado: .operacionParcial,
+    estado: .simulada,
     estaciones: [
+        "Puerto del Callao",
+        "Buenos Aires",
+        "Juan Pablo II",
+        "Insurgentes",
+        "Carmen de la Legua",
+        "Óscar R. Benavides",
+        "San Marcos",
+        "Elio",
+        "La Alborada",
+        "Tingo María",
+        "Parque Murillo",
+        "Plaza Bolognesi",
+        "Estación Central",
+        "Manco Cápac",
+        "Cangallo",
+        "28 de Julio",
+        "Nicolás Ayllón",
+        "Circunvalación",
+        "San Juan de Dios",
         "Evitamiento",
         "Óvalo Santa Anita",
         "Colectora Industrial",
         "Hermilio Valdizán",
-        "Mercado Santa Anita"
+        "Mercado Santa Anita",
+        "Vista Alegre",
+        "Prolongación Javier Prado",
+        "Municipalidad de Ate"
     ],
-    descripcion: "Línea en implementación progresiva."
+    descripcion: "Simulación del recorrido completo entre Callao y Ate."
 )
 
-
-// Línea 3
 let linea3 = LineaMetro(
     numero: 3,
     nombre: "Línea 3",
-    estado: .planificacion,
-    estaciones: [],
-    descripcion: "Línea considerada dentro de la futura red del Metro."
+    estado: .simulada,
+    estaciones: [
+        "Comas",
+        "Naranjal",
+        "Estación Central",
+        "Parque de la Reserva",
+        "Conde de San Isidro",
+        "Miraflores",
+        "Cabitos",
+        "Los Héroes"
+    ],
+    descripcion: "Simulación del eje Lima Norte - Centro - Lima Sur."
 )
 
-
-// Línea 4
 let linea4 = LineaMetro(
     numero: 4,
     nombre: "Línea 4",
-    estado: .planificacion,
-    estaciones: [],
-    descripcion: "Línea considerada dentro de la futura red del Metro."
+    estado: .simulada,
+    estaciones: [
+        "Carmen de la Legua",
+        "Aeropuerto",
+        "Conde de San Isidro",
+        "La Cultura",
+        "Mercado Santa Anita"
+    ],
+    descripcion: "Simulación del corredor Callao - Lima - Santa Anita."
 )
 
-
-// Línea 5
 let linea5 = LineaMetro(
     numero: 5,
     nombre: "Línea 5",
-    estado: .planificacion,
-    estaciones: [],
-    descripcion: "Línea considerada dentro de la futura red del Metro."
+    estado: .simulada,
+    estaciones: [
+        "Surquillo",
+        "Parque Reducto 2",
+        "Huaca Pucllana",
+        "Parque Central",
+        "Municipalidad de Miraflores",
+        "Barranco",
+        "Chorrillos",
+        "Villa El Salvador"
+    ],
+    descripcion: "Simulación del corredor Miraflores - Chorrillos - Lima Sur."
 )
 
-
-// Línea 6
 let linea6 = LineaMetro(
     numero: 6,
     nombre: "Línea 6",
-    estado: .planificacion,
-    estaciones: [],
-    descripcion: "Línea considerada dentro de la futura red del Metro."
+    estado: .simulada,
+    estaciones: [
+        "Túpac Amaru",
+        "Naranjal",
+        "Canto Grande",
+        "Huarangal",
+        "Las Flores",
+        "La Molina",
+        "Camacho",
+        "Universidad de Lima",
+        "Atocongo"
+    ],
+    descripcion: "Simulación del corredor Independencia - Lima Este - Surco."
 )
-
 
 
 // Diccionario:
