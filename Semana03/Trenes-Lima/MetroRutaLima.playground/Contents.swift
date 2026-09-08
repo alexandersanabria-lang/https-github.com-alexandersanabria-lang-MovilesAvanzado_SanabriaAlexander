@@ -286,3 +286,114 @@ func consultarEstadoLinea(numero: Int) {
         print("Estaciones registradas: \(linea.estaciones.count)")
     }
 }
+
+
+
+
+// Conexiones proyectadas entre líneas.
+// Estas conexiones no se consideran operativas actualmente.
+let conexionesProyectadas: [String: Set<Int>] = [
+    "Cabitos": [1, 3],
+    "La Cultura": [1, 4],
+    "Mercado Santa Anita": [2, 4]
+]
+
+
+// Referencias cercanas a determinadas estaciones
+let referenciasCercanas: [String: [String]] = [
+    "Gamarra": [
+        "Emporio Comercial de Gamarra"
+    ],
+
+    "La Cultura": [
+        "Museo de la Nación",
+        "Biblioteca Nacional del Perú"
+    ],
+
+    "Mercado Santa Anita": [
+        "Gran Mercado Mayorista de Lima"
+    ],
+
+    "Hermilio Valdizán": [
+        "Hospital Hermilio Valdizán"
+    ],
+
+    "Evitamiento": [
+        "Puente Santa Anita"
+    ]
+]
+
+
+// RF05 - Mostrar conexiones proyectadas
+func mostrarConexiones() {
+
+    print("\n======================================")
+    print("       CONEXIONES ENTRE LÍNEAS")
+    print("======================================")
+
+    print("\nLas siguientes conexiones son proyectadas.")
+    print("No necesariamente están disponibles actualmente.\n")
+
+    for estacion in conexionesProyectadas.keys.sorted() {
+
+        if let lineas = conexionesProyectadas[estacion] {
+
+            let nombresLineas = lineas
+                .sorted()
+                .map { "Línea \($0)" }
+                .joined(separator: " <-> ")
+
+            print("Estación: \(estacion)")
+            print("Conexión: \(nombresLineas)")
+            print("--------------------------------------")
+        }
+    }
+}
+
+
+// RF07 - Buscar referencias cercanas
+func buscarReferencia(_ texto: String) {
+
+    let busqueda = normalizarTexto(texto)
+
+    var resultados: [(estacion: String, lugar: String)] = []
+
+    for (estacion, lugares) in referenciasCercanas {
+
+        for lugar in lugares {
+
+            let estacionNormalizada = normalizarTexto(estacion)
+            let lugarNormalizado = normalizarTexto(lugar)
+
+            if estacionNormalizada.contains(busqueda) ||
+                lugarNormalizado.contains(busqueda) {
+
+                resultados.append(
+                    (estacion: estacion, lugar: lugar)
+                )
+            }
+        }
+    }
+
+    if resultados.isEmpty {
+
+        print("\n No se encontró una referencia relacionada.")
+        return
+    }
+
+    print("\n======================================")
+    print("         REFERENCIAS ENCONTRADAS")
+    print("======================================")
+
+    for resultado in resultados {
+
+        print("\nLugar: \(resultado.lugar)")
+        print("Estación cercana: \(resultado.estacion)")
+
+        let lineas = obtenerLineasDeEstacion(resultado.estacion)
+
+        for numero in lineas.sorted() {
+            print("Línea: Línea \(numero)")
+        }
+    }
+}
