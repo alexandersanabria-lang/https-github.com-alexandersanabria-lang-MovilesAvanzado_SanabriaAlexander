@@ -697,147 +697,299 @@ func buscarConexionProyectada(
 
 
 // RF06 - Consultar una ruta entre dos estaciones
+func obtenerRecorrido(
+    desde origen: String,
+    hasta destino: String,
+    en linea: LineaMetro
+) -> [String]? {
+
+    guard let indiceOrigen =
+        obtenerIndiceEstacion(origen, en: linea),
+
+          let indiceDestino =
+        obtenerIndiceEstacion(destino, en: linea)
+
+    else {
+        return nil
+    }
+
+
+    if indiceOrigen <= indiceDestino {
+
+        return Array(
+            linea.estaciones[indiceOrigen...indiceDestino]
+        )
+
+    } else {
+
+        return Array(
+            linea.estaciones[indiceDestino...indiceOrigen]
+                .reversed()
+        )
+    }
+}
+
+
+func imprimirTramo(
+    desde origen: String,
+    hasta destino: String,
+    lineaNumero: Int
+) {
+
+    guard let linea =
+        buscarLinea(numero: lineaNumero),
+
+          let recorrido =
+        obtenerRecorrido(
+            desde: origen,
+            hasta: destino,
+            en: linea
+        )
+
+    else {
+
+        print("No se pudo calcular este tramo.")
+        return
+    }
+
+
+    print("\nLÍNEA \(lineaNumero)")
+    print("--------------------------------------")
+
+
+    for (indice, estacion) in recorrido.enumerated() {
+
+        if indice == 0 {
+
+            print("INICIO  → \(estacion)")
+
+        } else if indice == recorrido.count - 1 {
+
+            print("LLEGADA → \(estacion)")
+
+        } else {
+
+            print("          \(estacion)")
+        }
+    }
+
+
+    print("Estaciones del tramo: \(recorrido.count)")
+}
+
+
 func consultarRuta(
     origen: String,
     destino: String
 ) {
 
-    // Validar estación de origen
-    guard let origenReal = obtenerNombreEstacion(origen) else {
-        print("\n La estación de origen no está registrada.")
+    guard let origenReal =
+        obtenerNombreEstacion(origen)
+    else {
+
+        print("\n No se encontró la estación de origen.")
         return
     }
 
-    // Validar estación de destino
-    guard let destinoReal = obtenerNombreEstacion(destino) else {
-        print("\n La estación de destino no está registrada.")
+
+    guard let destinoReal =
+        obtenerNombreEstacion(destino)
+    else {
+
+        print("\n No se encontró la estación de destino.")
         return
     }
 
-    // Evitar origen y destino iguales
-    if normalizarTexto(origenReal) == normalizarTexto(destinoReal) {
-        print("\n El origen y el destino son la misma estación.")
+
+    if normalizarTexto(origenReal) ==
+        normalizarTexto(destinoReal) {
+
+        print("\nOrigen y destino son la misma estación.")
         return
     }
 
-    let lineasOrigen = obtenerLineasDeEstacion(origenReal)
-    let lineasDestino = obtenerLineasDeEstacion(destinoReal)
+
+    let lineasOrigen =
+        obtenerLineasDeEstacion(origenReal)
+
+    let lineasDestino =
+        obtenerLineasDeEstacion(destinoReal)
+
+
+    var mejorCamino: [Int]?
+
+    var lineaInicialElegida: Int?
+
+    var lineaFinalElegida: Int?
+
+
+    // Busca el camino con menor cantidad de líneas
+    for lineaOrigen in lineasOrigen {
+
+        for lineaDestino in lineasDestino {
+
+            if let camino =
+                buscarCaminoDeLineas(
+                    desde: lineaOrigen,
+                    hasta: lineaDestino
+                ) {
+
+                if mejorCamino == nil ||
+                   camino.count < mejorCamino!.count {
+
+                    mejorCamino = camino
+                    lineaInicialElegida = lineaOrigen
+                    lineaFinalElegida = lineaDestino
+                }
+            }
+        }
+    }
+
+
+    guard let camino = mejorCamino,
+          let lineaInicial = lineaInicialElegida,
+          let lineaFinal = lineaFinalElegida
+    else {
+
+        print("\n No se encontró una ruta posible.")
+        return
+    }
+
 
     print("\n======================================")
-    print("             RESULTADO")
+    print("            PLAN DE VIAJE")
     print("======================================")
 
     print("\nOrigen: \(origenReal)")
     print("Destino: \(destinoReal)")
 
+    print(
+        "Líneas: " +
+        camino
+            .map { "L\($0)" }
+            .joined(separator: " → ")
+    )
 
-    
 
-    let lineasComunes = lineasOrigen.intersection(lineasDestino)
+    // =================================================
+    // MISMA LÍNEA
+    // =================================================
 
-    if let numeroLinea = lineasComunes.sorted().first,
-       let linea = buscarLinea(numero: numeroLinea),
-       let indiceOrigen = obtenerIndiceEstacion(origenReal, en: linea),
-       let indiceDestino = obtenerIndiceEstacion(destinoReal, en: linea) {
+    if lineaInicial == lineaFinal {
 
-        let cantidadTramos = abs(indiceDestino - indiceOrigen)
+        imprimirTramo(
+            desde: origenReal,
+            hasta: destinoReal,
+            lineaNumero: lineaInicial
+        )
 
-        print("\n RUTA DIRECTA")
-        print("Utilice la \(linea.nombre).")
-
-        // Determinar dirección
-        if indiceDestino > indiceOrigen {
-
-            if let ultimaEstacion = linea.estaciones.last {
-                print("Dirección: \(ultimaEstacion)")
-            }
-
-        } else {
-
-            if let primeraEstacion = linea.estaciones.first {
-                print("Dirección: \(primeraEstacion)")
-            }
-        }
-
-        print("Tramos de recorrido: \(cantidadTramos)")
-
-        print("\nRecorrido:")
-
-        // Recorrido hacia adelante
-        if indiceOrigen < indiceDestino {
-
-            for indice in indiceOrigen...indiceDestino {
-
-                if indice == indiceOrigen {
-                    print(" \(linea.estaciones[indice])")
-
-                } else if indice == indiceDestino {
-                    print(" \(linea.estaciones[indice])")
-
-                } else {
-                    print("• \(linea.estaciones[indice])")
-                }
-            }
-
-        } else {
-
-            // Recorrido hacia atrás
-            for indice in stride(
-                from: indiceOrigen,
-                through: indiceDestino,
-                by: -1
-            ) {
-
-                if indice == indiceOrigen {
-                    print(" \(linea.estaciones[indice])")
-
-                } else if indice == indiceDestino {
-                    print(" \(linea.estaciones[indice])")
-
-                } else {
-                    print(" \(linea.estaciones[indice])")
-                }
-            }
-        }
+        print("\n Viaje directo.")
+        print("No necesitas cambiar de línea.")
 
         return
     }
 
 
-    
+    // =================================================
+    // VARIAS LÍNEAS
+    // =================================================
 
-    for lineaOrigen in lineasOrigen {
+    var estacionActual = origenReal
 
-        for lineaDestino in lineasDestino {
+    var cantidadEnlaces = 0
 
-            if let conexion = buscarConexionProyectada(
-                lineaOrigen: lineaOrigen,
-                lineaDestino: lineaDestino
-            ) {
 
-                print("\n CONEXIÓN PROYECTADA")
+    for indice in 0..<(camino.count - 1) {
 
-                print(
-                    "Existe una conexión proyectada entre " +
-                    "Línea \(lineaOrigen) y Línea \(lineaDestino)."
-                )
+        let lineaActual = camino[indice]
 
-                print("Punto de conexión: \(conexion)")
+        let siguienteLinea = camino[indice + 1]
 
-                print(
-                    "Esta conexión no se considera una ruta " +
-                    "operativa actualmente."
-                )
 
-                return
-            }
+        guard let enlace =
+            buscarEnlace(
+                entre: lineaActual,
+                y: siguienteLinea
+            )
+        else {
+
+            print("\n Error al construir el recorrido.")
+            return
         }
+
+
+        let salida = estacionSalida(
+            del: enlace,
+            para: lineaActual
+        )
+
+
+        let entrada = estacionEntrada(
+            del: enlace,
+            hacia: siguienteLinea
+        )
+
+
+        imprimirTramo(
+            desde: estacionActual,
+            hasta: salida,
+            lineaNumero: lineaActual
+        )
+
+
+        cantidadEnlaces += 1
+
+
+        print("\n======================================")
+        print("        CAMBIO POR CERCANÍA")
+        print("======================================")
+
+        print("\nBaja en:")
+        print("\(salida) - Línea \(lineaActual)")
+
+        print("\nDirígete hacia:")
+        print("\(entrada) - Línea \(siguienteLinea)")
+
+        print("\n\(enlace.indicacion)")
+
+        if normalizarTexto(salida) !=
+            normalizarTexto(entrada) {
+
+            print("\nEste desplazamiento se realiza")
+            print("fuera del recorrido ferroviario.")
+        }
+
+
+        estacionActual = entrada
     }
 
 
-    
+    // Último tramo
+    imprimirTramo(
+        desde: estacionActual,
+        hasta: destinoReal,
+        lineaNumero: lineaFinal
+    )
 
-    print("\n No se encontró una ruta disponible con los datos registrados.")
+
+    print("\n======================================")
+    print("              RESUMEN")
+    print("======================================")
+
+    print("Origen: \(origenReal)")
+    print("Destino: \(destinoReal)")
+
+    print(
+        "Líneas utilizadas: " +
+        camino
+            .map { "L\($0)" }
+            .joined(separator: " → ")
+    )
+
+    print("Cantidad de líneas: \(camino.count)")
+    print("Cambios por cercanía: \(cantidadEnlaces)")
+
+    print("\n Ruta calculada correctamente.")
 }
 
 
