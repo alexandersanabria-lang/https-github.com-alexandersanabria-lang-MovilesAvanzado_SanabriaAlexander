@@ -186,3 +186,103 @@ func obtenerLineasDeEstacion(_ nombreEstacion: String) -> Set<Int> {
 
     return lineasEncontradas
 }
+
+
+
+// RF01 - Mostrar todas las líneas registradas
+func mostrarLineas() {
+
+    print("\n======================================")
+    print("          LÍNEAS DEL METRO")
+    print("======================================")
+
+    for numero in lineasMetro.keys.sorted() {
+
+        if let linea = lineasMetro[numero] {
+
+            print("\n\(linea.nombre)")
+            print("Estado: \(linea.estado.rawValue)")
+            print("Descripción: \(linea.descripcion)")
+        }
+    }
+}
+
+
+// RF02 - Mostrar estaciones de una línea
+func mostrarEstacionesDeLinea(numero: Int) {
+
+    guard let linea = buscarLinea(numero: numero) else {
+        print("\n La línea ingresada no está registrada.")
+        return
+    }
+
+    print("\n======================================")
+    print("              \(linea.nombre.uppercased())")
+    print("======================================")
+
+    print("Estado: \(linea.estado.rawValue)")
+
+    if linea.estaciones.isEmpty {
+
+        print("\nEsta línea todavía no tiene estaciones habilitadas registradas.")
+        return
+    }
+
+    print("\nEstaciones registradas:")
+
+    for (indice, estacion) in linea.estaciones.enumerated() {
+        print("\(indice + 1). \(estacion)")
+    }
+
+    print("\nTotal: \(linea.estaciones.count) estaciones")
+}
+
+
+// RF03 - Buscar una estación
+func buscarEstacion(nombre: String) {
+
+    guard let estacion = obtenerNombreEstacion(nombre) else {
+        print("\n No se encontró la estación indicada.")
+        return
+    }
+
+    let lineasEncontradas = obtenerLineasDeEstacion(estacion)
+
+    print("\n======================================")
+    print("          ESTACIÓN ENCONTRADA")
+    print("======================================")
+
+    print("\nEstación: \(estacion)")
+
+    for numero in lineasEncontradas.sorted() {
+
+        if let linea = buscarLinea(numero: numero) {
+            print("Línea: \(linea.nombre)")
+            print("Estado: \(linea.estado.rawValue)")
+        }
+    }
+}
+
+
+// RF04 - Consultar estado de una línea
+func consultarEstadoLinea(numero: Int) {
+
+    guard let linea = buscarLinea(numero: numero) else {
+        print("\n La línea ingresada no está registrada.")
+        return
+    }
+
+    print("\n======================================")
+    print("          ESTADO DE LA LÍNEA")
+    print("======================================")
+
+    print("\n\(linea.nombre)")
+    print("Estado: \(linea.estado.rawValue)")
+    print("Descripción: \(linea.descripcion)")
+
+    if linea.estaciones.isEmpty {
+        print("Estaciones registradas: 0")
+    } else {
+        print("Estaciones registradas: \(linea.estaciones.count)")
+    }
+}
