@@ -4,5 +4,10 @@
         <attribute name="direccion" optional="YES" attributeType="String"/>
         <attribute name="nombre" optional="YES" attributeType="String"/>
         <attribute name="telefono" optional="YES" attributeType="String"/>
+        <relationship name="grupo" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Grupo" inverseName="contactos" inverseEntity="Grupo"/>
+    </entity>
+    <entity name="Grupo" representedClassName="Grupo" syncable="YES" codeGenerationType="class">
+        <attribute name="nombre" optional="YES" attributeType="String"/>
+        <relationship name="contactos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Contacto" inverseName="grupo" inverseEntity="Contacto"/>
     </entity>
 </model>
