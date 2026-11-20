@@ -1,6 +1,7 @@
 import Foundation
 import Combine   // Necesario en Xcode nuevo para ObservableObject y @Published
 
+@MainActor       // Asegura que la clase trabaje en el hilo principal (evita errores de concurrencia en Xcode nuevo)
 class UserViewModel: ObservableObject {
     @Published var users: [User] = []
     @Published var searchText: String = ""
@@ -16,22 +17,23 @@ class UserViewModel: ObservableObject {
     }
 
     // GET: Obtener todos los usuarios
-    func fetchUsers() {
+    func fetchUsers() async {
         guard let url = URL(string: "https://jsonplaceholder.typicode.com/users") else { return }
 
-        URLSession.shared.dataTask(with: url) { data, _, _ in
-            if let data = data {
-                if let decodedUsers = try? JSONDecoder().decode([User].self, from: data) {
-                    DispatchQueue.main.async {
-                        self.users = decodedUsers
-                    }
-                }
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let decodedUsers = try JSONDecoder().decode([User].self, from: data)
+
+            await MainActor.run {
+                self.users = decodedUsers
             }
-        }.resume()
+        } catch {
+            print("Error fetching users: \(error)")
+        }
     }
 
     // POST: Crear un nuevo usuario
-    func createUser(name: String, email: String) {
+    func createUser(name: String, email: String) async {
         guard let url = URL(string: "https://jsonplaceholder.typicode.com/users") else { return }
 
         var request = URLRequest(url: url)
@@ -42,24 +44,19 @@ class UserViewModel: ObservableObject {
 
         do {
             request.httpBody = try JSONEncoder().encode(newUser)
-        } catch {
-            print("Error al codificar el usuario")
-            return
-        }
+            let (data, _) = try await URLSession.shared.data(for: request)
+            let createdUser = try JSONDecoder().decode(User.self, from: data)
 
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let data = data {
-                if let createdUser = try? JSONDecoder().decode(User.self, from: data) {
-                    DispatchQueue.main.async {
-                        self.users.append(createdUser)
-                    }
-                }
+            await MainActor.run {
+                self.users.append(createdUser)
             }
-        }.resume()
+        } catch {
+            print("Error creating user: \(error)")
+        }
     }
 
-    // TO DO → PUT: Actualizar un usuario existente
-    func updateUser(user: User) {
+    // PUT: Actualizar un usuario existente
+    func updateUser(user: User) async {
         guard let url = URL(string: "https://jsonplaceholder.typicode.com/users/\(user.id)") else { return }
 
         var request = URLRequest(url: url)
@@ -68,14 +65,9 @@ class UserViewModel: ObservableObject {
 
         do {
             request.httpBody = try JSONEncoder().encode(user)
-        } catch {
-            print("Error al codificar el usuario")
-            return
-        }
+            let (_, _) = try await URLSession.shared.data(for: request)
 
-        URLSession.shared.dataTask(with: request) { _, response, error in
-            DispatchQueue.main.async {
-                // Reemplaza el usuario en la lista local (la API es de prueba y no guarda cambios)
+            await MainActor.run {
                 if let index = self.users.firstIndex(where: { $0.id == user.id }) {
                     self.users[index] = user
                     print("Usuario actualizado localmente.")
@@ -83,21 +75,27 @@ class UserViewModel: ObservableObject {
                     print("Usuario no encontrado para actualizar.")
                 }
             }
-        }.resume()
+        } catch {
+            print("Error updating user: \(error)")
+        }
     }
 
     // DELETE: Eliminar un usuario por id
-    func deleteUser(id: Int) {
+    func deleteUser(id: Int) async {
         guard let url = URL(string: "https://jsonplaceholder.typicode.com/users/\(id)") else { return }
 
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
 
-        URLSession.shared.dataTask(with: request) { _, response, error in
-            DispatchQueue.main.async {
+        do {
+            let (_, _) = try await URLSession.shared.data(for: request)
+
+            await MainActor.run {
                 self.users.removeAll { $0.id == id }
                 print("Usuario eliminado localmente (simulado)")
             }
-        }.resume()
+        } catch {
+            print("Error deleting user: \(error)")
+        }
     }
 }
