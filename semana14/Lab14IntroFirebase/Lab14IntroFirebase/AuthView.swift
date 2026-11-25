@@ -28,20 +28,8 @@ struct AuthView: View {
                 Spacer()
 
                 if isSignedIn {
-                    // Signed in view
-                    VStack(spacing: 20) {
-                        Text("Welcome!")
-                            .font(.title)
-                            .foregroundColor(.green)
-
-                        Text("You are signed in")
-                            .font(.body)
-
-                        Button("Sign Out") {
-                            signOut()
-                        }
-                        .buttonStyle(SignOutButtonStyle())
-                    }
+                    // Show MessagesView when signed in
+                    MessagesView()
                 } else {
                     // Sign in form
                     VStack(spacing: 15) {
